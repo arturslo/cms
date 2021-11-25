@@ -42,6 +42,53 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test **/
+    public function results_are_found_using_where_like_unicode()
+    {
+        $items = collect([
+            ['reference' => 'a', 'title' => 'Лариса'],
+            ['reference' => 'b', 'title' => 'XларисаX'],
+            ['reference' => 'c', 'title' => 'Кирилл'],
+        ]);
+
+        $results = (new FakeQueryBuilder($items))->withoutData()->where('title', 'like', '%лариса%')->get();
+
+        $this->assertCount(2, $results);
+        $this->assertEquals(['a', 'b'], $results->map->reference->all());
+    }
+
+    /** @test **/
+    public function results_are_found_using_where_equals()
+    {
+        $items = collect([
+            ['reference' => 'a', 'title' => 'Frodo'],
+            ['reference' => 'b', 'title' => 'frodo'],
+            ['reference' => 'c', 'title' => 'Gandalf'],
+            ['reference' => 'd', 'title' => 'Frodo\'s Precious'],
+        ]);
+
+        $results = (new FakeQueryBuilder($items))->withoutData()->where('title', '=', 'frodo')->get();
+
+        $this->assertCount(2, $results);
+        $this->assertEquals(['a', 'b'], $results->map->reference->all());
+    }
+
+    /** @test **/
+    public function results_are_found_using_where_equals_unicode()
+    {
+        $items = collect([
+            ['reference' => 'a', 'title' => 'Лариса'],
+            ['reference' => 'b', 'title' => 'лариса'],
+            ['reference' => 'c', 'title' => 'Кирилл'],
+            ['reference' => 'd', 'title' => 'Лариса Короткина'],
+        ]);
+
+        $results = (new FakeQueryBuilder($items))->withoutData()->where('title', '=', 'лариса')->get();
+
+        $this->assertCount(2, $results);
+        $this->assertEquals(['a', 'b'], $results->map->reference->all());
+    }
+
+    /** @test **/
     public function results_are_found_using_or_where()
     {
         $this->markTestSkipped();

@@ -17,6 +17,7 @@ class CombTest extends TestCase
         $comb = new Comb([
             ['title' => 'John Doe', 'email' => 'john@doe.com'],
             ['title' => 'Jane Doe', 'email' => 'jane@doe.com'],
+            ['title' => 'Лариса Короткина', 'email' => 'larisa@korotkina.com'],
         ]);
 
         try {
@@ -34,6 +35,8 @@ class CombTest extends TestCase
             'string with single result' => ['jane', ['Jane Doe']],
             'string with multiple results' => ['doe', ['John Doe', 'Jane Doe']],
             'email' => ['john@doe.com', ['John Doe']],
+            'exact word match unicode' => ['Лариса', ['Лариса Короткина']],
+            'word match unicode ignoring case' => ['лариса', ['Лариса Короткина']],
         ];
     }
 }
